@@ -1,60 +1,50 @@
 package com.example.myweatherapp.view.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.example.myweatherapp.R
+import com.example.myweatherapp.databinding.FragmentCurrentWeatherBinding
+import com.example.myweatherapp.model.network.api.OpenWeatherApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [CurrentWeatherFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class CurrentWeatherFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentCurrentWeatherBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_current_weather, container, false)
+        _binding = FragmentCurrentWeatherBinding.inflate(inflater,container,false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment CurrentWeatherFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            CurrentWeatherFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    @SuppressLint("SetTextI18n")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val api = OpenWeatherApi()
+        lifecycleScope.launch(Dispatchers.Main) {
+            val currentWeatherResponse = api.getCurrentWeather("Minsk").await()
+            binding.humidityValue.text = currentWeatherResponse.main.humidity.toString() + " %"
+            binding.windSpeedValue.text = currentWeatherResponse.wind.speed.toString() + " km/h"
+            binding.pressureValue.text = currentWeatherResponse.main.pressure.toString() + " hPa"
+//            if (currentWeatherResponse.rain.h1 == null) {
+//                binding.rainValue.text = "0 mm"
+//            } else {
+//                binding.rainValue.text = currentWeatherResponse.rain.h1.toString() + " mm"
+//            }
+        }
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

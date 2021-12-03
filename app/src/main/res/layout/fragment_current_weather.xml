@@ -1,14 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".view.fragments.CurrentWeatherFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Today" />
+        android:id="@+id/todayTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:text="Today"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</FrameLayout>
+    <View
+        android:id="@+id/topLine"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/grey"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/todayTitle" />
+
+    <ImageView
+        android:id="@+id/currentWeatherImage"
+        android:layout_width="147dp"
+        android:layout_height="133dp"
+        android:layout_marginTop="72dp"
+        android:src="@drawable/weather_sunny"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/topLine" />
+
+    <TextView
+        android:id="@+id/currentLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:text="--"
+        android:textSize="17sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentWeatherImage" />
+
+    <TextView
+        android:id="@+id/currentTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="4dp"
+        android:text="--"
+        android:textColor="@color/blue"
+        android:textSize="23sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/currentLocation" />
+
+    <ImageView
+        android:id="@+id/dotted_line1"
+        android:layout_width="160dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="48dp"
+        android:src="@drawable/dotted_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/currentTemp" />
+
+    <ImageView
+        android:id="@+id/humidityImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/weather_pouring"
+        app:layout_constraintEnd_toStartOf="@+id/rainImage"
+        app:layout_constraintHorizontal_bias="0.302"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rainImage" />
+
+    <TextView
+        android:id="@+id/humidityValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        app:layout_constraintEnd_toEndOf="@+id/humidityImage"
+        app:layout_constraintStart_toStartOf="@+id/humidityImage"
+        app:layout_constraintTop_toBottomOf="@+id/humidityImage" />
+
+    <ImageView
+        android:id="@+id/rainImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/ic_drop_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dotted_line1" />
+
+    <TextView
+        android:id="@+id/rainValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        app:layout_constraintEnd_toEndOf="@+id/rainImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/rainImage"
+        app:layout_constraintTop_toBottomOf="@+id/rainImage" />
+
+    <ImageView
+        android:id="@+id/pressureImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:src="@drawable/temperature_celsius"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.675"
+        app:layout_constraintStart_toEndOf="@+id/rainImage"
+        app:layout_constraintTop_toTopOf="@+id/rainImage" />
+
+    <TextView
+        android:id="@+id/pressureValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        app:layout_constraintEnd_toEndOf="@+id/pressureImage"
+        app:layout_constraintStart_toStartOf="@+id/pressureImage"
+        app:layout_constraintTop_toBottomOf="@+id/pressureImage" />
+
+    <ImageView
+        android:id="@+id/windSpeedImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/weather_windy"
+        app:layout_constraintEnd_toStartOf="@+id/windDirectionImage"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rainValue" />
+
+    <TextView
+        android:id="@+id/windSpeedValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+
+        android:text="--"
+        app:layout_constraintEnd_toEndOf="@+id/windSpeedImage"
+        app:layout_constraintHorizontal_bias="0.47"
+        app:layout_constraintStart_toStartOf="@+id/windSpeedImage"
+        app:layout_constraintTop_toBottomOf="@+id/windSpeedImage" />
+
+    <ImageView
+        android:id="@+id/windDirectionImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="32dp"
+        android:src="@drawable/compass_outline"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/windSpeedImage"
+        app:layout_constraintTop_toBottomOf="@+id/rainValue" />
+
+    <TextView
+        android:id="@+id/windDirectionValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="--"
+        app:layout_constraintEnd_toEndOf="@+id/windDirectionImage"
+        app:layout_constraintStart_toStartOf="@+id/windDirectionImage"
+        app:layout_constraintTop_toBottomOf="@+id/windDirectionImage" />
+
+    <ImageView
+        android:id="@+id/dotted_line2"
+        android:layout_width="160dp"
+        android:layout_height="3dp"
+        android:layout_marginTop="36dp"
+        android:src="@drawable/dotted_line"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/windDirectionValue" />
+
+    <android.widget.Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Share"
+        android:textAllCaps="false"
+        android:textSize="23sp"
+        style="?android:attr/borderlessButtonStyle"
+        android:textColor="@color/orange"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dotted_line2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
