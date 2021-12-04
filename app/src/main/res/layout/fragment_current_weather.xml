@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".view.fragments.CurrentWeatherFragment">
 
+    <ProgressBar
+        android:id="@+id/currentWeatherProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/cw_error_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Check your internet connection"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"/>
+
     <TextView
         android:id="@+id/todayTitle"
         android:layout_width="wrap_content"
@@ -14,6 +37,7 @@
         android:paddingBottom="5dp"
         android:text="Today"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,10 +55,9 @@
 
     <ImageView
         android:id="@+id/currentWeatherImage"
-        android:layout_width="147dp"
-        android:layout_height="133dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="72dp"
-        android:src="@drawable/weather_sunny"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/topLine" />
@@ -79,7 +102,7 @@
         android:id="@+id/humidityImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/weather_pouring"
+        android:src="@drawable/water_percent"
         app:layout_constraintEnd_toStartOf="@+id/rainImage"
         app:layout_constraintHorizontal_bias="0.302"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,7 +122,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/ic_drop_outline"
+        android:src="@drawable/weather_rainy"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,7 +142,7 @@
         android:id="@+id/pressureImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/temperature_celsius"
+        android:src="@drawable/atmospheric"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.675"
         app:layout_constraintStart_toEndOf="@+id/rainImage"
@@ -189,13 +212,13 @@
         app:layout_constraintTop_toBottomOf="@id/windDirectionValue" />
 
     <android.widget.Button
+        style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Share"
         android:textAllCaps="false"
-        android:textSize="23sp"
-        style="?android:attr/borderlessButtonStyle"
         android:textColor="@color/orange"
+        android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

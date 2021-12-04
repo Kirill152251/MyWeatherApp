@@ -10,8 +10,8 @@ const val API_KEY = "98c8b6b22e063675fb3b8a71a56e5c7b"
 const val UNITS = "metric"
 const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 //For icons
-//http://openweathermap.org/img/wn/1d@2x.png
-
+//https://openweathermap.org/img/wn/1d@2x.png
+const val ICON_URL = "https://openweathermap.org/img/wn/"
 object WeatherClient {
 
     fun getClient(): OpenWeatherApi{
@@ -20,7 +20,7 @@ object WeatherClient {
             val url = chain.request()
                 .url
                 .newBuilder()
-                .addQueryParameter("api_key", API_KEY)
+                .addQueryParameter("appid", API_KEY)
                 .addQueryParameter("units", UNITS)
                 .build()
 
