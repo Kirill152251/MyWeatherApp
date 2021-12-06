@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/currentWeatherFragment"
     tools:context=".view.fragments.CurrentWeatherFragment">
 
     <ProgressBar
@@ -22,12 +23,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Check your internet connection"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/todayTitle"
@@ -53,6 +54,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/todayTitle" />
 
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/all_ui"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="currentLocation, currentWeatherImage, currentTemp,
+dotted_line1,dotted_line2, humidityImage, humidityValue, rainImage,rainValue,pressureImage,pressureValue,windDirectionImage,
+windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/currentWeatherImage"
         android:layout_width="100dp"
@@ -67,7 +81,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="3dp"
-        android:text="--"
         android:textSize="17sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -79,7 +92,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="4dp"
-        android:text="--"
         android:textColor="@color/blue"
         android:textSize="23sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -112,7 +124,6 @@
         android:id="@+id/humidityValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="--"
         app:layout_constraintEnd_toEndOf="@+id/humidityImage"
         app:layout_constraintStart_toStartOf="@+id/humidityImage"
         app:layout_constraintTop_toBottomOf="@+id/humidityImage" />
@@ -132,7 +143,6 @@
         android:id="@+id/rainValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="--"
         app:layout_constraintEnd_toEndOf="@+id/rainImage"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/rainImage"
@@ -142,7 +152,7 @@
         android:id="@+id/pressureImage"
         android:layout_width="35dp"
         android:layout_height="35dp"
-        android:src="@drawable/atmospheric"
+        android:src="@drawable/barometer"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.675"
         app:layout_constraintStart_toEndOf="@+id/rainImage"
@@ -152,7 +162,6 @@
         android:id="@+id/pressureValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="--"
         app:layout_constraintEnd_toEndOf="@+id/pressureImage"
         app:layout_constraintStart_toStartOf="@+id/pressureImage"
         app:layout_constraintTop_toBottomOf="@+id/pressureImage" />
@@ -173,8 +182,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-
-        android:text="--"
         app:layout_constraintEnd_toEndOf="@+id/windSpeedImage"
         app:layout_constraintHorizontal_bias="0.47"
         app:layout_constraintStart_toStartOf="@+id/windSpeedImage"
@@ -185,7 +192,7 @@
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:layout_marginTop="32dp"
-        android:src="@drawable/compass_outline"
+        android:src="@drawable/windsock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/windSpeedImage"
@@ -195,7 +202,6 @@
         android:id="@+id/windDirectionValue"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="--"
         app:layout_constraintEnd_toEndOf="@+id/windDirectionImage"
         app:layout_constraintStart_toStartOf="@+id/windDirectionImage"
         app:layout_constraintTop_toBottomOf="@+id/windDirectionImage" />
@@ -212,6 +218,7 @@
         app:layout_constraintTop_toBottomOf="@id/windDirectionValue" />
 
     <android.widget.Button
+        android:id="@+id/btn_share"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

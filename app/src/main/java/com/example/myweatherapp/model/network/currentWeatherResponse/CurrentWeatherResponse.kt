@@ -1,8 +1,5 @@
-package com.example.myweatherapp.model.network
+package com.example.myweatherapp.model.network.currentWeatherResponse
 
-
-
-import com.google.gson.annotations.SerializedName
 
 data class CurrentWeatherResponse(
     val main: Main,
@@ -11,5 +8,6 @@ data class CurrentWeatherResponse(
     val rain: Rain? = null,
     val visibility: Int,
     val weather: List<Weather>,
-    val wind: Wind
+    val wind: Wind,
+    val snow: Snow? = null
 )

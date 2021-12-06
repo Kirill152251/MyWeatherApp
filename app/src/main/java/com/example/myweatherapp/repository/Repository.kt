@@ -1,7 +1,7 @@
 package com.example.myweatherapp.repository
 
 import androidx.lifecycle.LiveData
-import com.example.myweatherapp.model.network.CurrentWeatherResponse
+import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import io.reactivex.disposables.CompositeDisposable
 

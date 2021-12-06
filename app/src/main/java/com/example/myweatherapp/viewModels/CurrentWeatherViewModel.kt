@@ -2,7 +2,7 @@ package com.example.myweatherapp.viewModels
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
-import com.example.myweatherapp.model.network.CurrentWeatherResponse
+import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.repository.NetworkState
 
 import com.example.myweatherapp.repository.Repository

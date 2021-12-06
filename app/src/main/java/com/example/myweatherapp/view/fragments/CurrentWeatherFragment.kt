@@ -9,11 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
 import com.example.myweatherapp.R
 import com.example.myweatherapp.databinding.FragmentCurrentWeatherBinding
-import com.example.myweatherapp.model.network.CurrentWeatherResponse
+import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.ICON_URL
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.model.network.api.WeatherClient
@@ -21,8 +20,6 @@ import com.example.myweatherapp.repository.NetworkState
 import com.example.myweatherapp.repository.Repository
 import com.example.myweatherapp.viewModels.CurrentWeatherViewModel
 import com.example.myweatherapp.viewModels.CurrentWeatherViewModelFactory
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlin.math.floor
 
 
@@ -51,10 +48,15 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
             bindUI(it)
         })
         viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            binding.currentWeatherProgressBar.visibility = if (it == NetworkState.LOADING) View.VISIBLE else View.GONE
+            if (it == NetworkState.LOADING) {
+                binding.currentWeatherProgressBar.visibility = View.VISIBLE
+                binding.allUi.visibility = View.GONE
+            } else {
+                binding.currentWeatherProgressBar.visibility = View.GONE
+                binding.allUi.visibility = View.VISIBLE
+            }
             binding.cwErrorMsg.visibility = if (it == NetworkState.ERROR) View.VISIBLE else View.GONE
         })
-
     }
 
     @SuppressLint("SetTextI18n", "CheckResult")
@@ -68,8 +70,15 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather) {
         binding.windDirectionValue.text = getWindDirection(it.wind.deg)
 
         if (it.rain?.h1 == null) {
-            binding.rainValue.text = "0.0 mm"
+            if (it.snow?.h1 == null) {
+                binding.rainImage.setImageResource(R.drawable.weather_rainy)
+                binding.rainValue.text = "0.0 mm"
+            } else {
+                binding.rainImage.setImageResource(R.drawable.weather_snowy)
+                binding.rainValue.text = it.snow.h1.toString() + " mm"
+            }
         } else {
+            binding.rainImage.setImageResource(R.drawable.weather_rainy)
             binding.rainValue.text = it.rain.h1.toString() + " mm"
         }
 

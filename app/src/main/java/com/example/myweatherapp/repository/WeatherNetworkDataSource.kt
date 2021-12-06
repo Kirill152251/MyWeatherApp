@@ -3,7 +3,7 @@ package com.example.myweatherapp.repository
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.example.myweatherapp.model.network.CurrentWeatherResponse
+import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
