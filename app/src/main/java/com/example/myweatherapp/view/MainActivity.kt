@@ -1,12 +1,17 @@
 package com.example.myweatherapp.view
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.location.LocationRequest
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -26,15 +31,16 @@ import kotlin.concurrent.fixedRateTimer
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var fusedLocationProviderClient: FusedLocationProviderClient
+    private val permissionId = 42
+    lateinit var mFusedLocationClient: FusedLocationProviderClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setBottomMenu()
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
-        fetchLocation()
+        //mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        //getLastLocation()
     }
-
 
     private fun setBottomMenu() {
         val navController = findNavController(R.id.myNavHostFragment)
@@ -42,35 +48,69 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
     }
 
-    private fun fetchLocation() {
-        val task = fusedLocationProviderClient.lastLocation
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),
-                101
-            )
-            return
-        }
-        task.addOnSuccessListener {
-            if(it != null) {
-                var coordinates = doubleArrayOf(it.longitude, it.latitude)
-                val bundle = Bundle()
-                bundle.putDoubleArray("coordinates", coordinates)
-                val currentWeatherFragment = CurrentWeatherFragment()
-                currentWeatherFragment.arguments = bundle
-                val fragmentManager: FragmentManager = supportFragmentManager
-                val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-                fragmentTransaction.add(R.id.currentWeatherFragment, currentWeatherFragment).commit()
-            }
-        }
-
-    }
+//    private fun checkPermissions(): Boolean {
+//        if (
+//            ActivityCompat.checkSelfPermission(
+//                this,
+//                Manifest.permission.ACCESS_COARSE_LOCATION
+//            ) == PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission
+//                (
+//                this,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ) == PackageManager.PERMISSION_GRANTED
+//        ) {
+//            return true
+//        }
+//        return false
+//    }
+//
+//    private fun isLocationEnabled(): Boolean {
+//        var locationManager: LocationManager =
+//            getSystemService(Context.LOCATION_SERVICE) as LocationManager
+//        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(
+//            LocationManager.NETWORK_PROVIDER
+//        )
+//    }
+//
+//    private fun requestPermissions() {
+//        ActivityCompat.requestPermissions(
+//            this,
+//            arrayOf(
+//                Manifest.permission.ACCESS_COARSE_LOCATION,
+//                Manifest.permission.ACCESS_FINE_LOCATION
+//            ),
+//            permissionId
+//        )
+//    }
+//
+//    @SuppressLint("MissingPermission")
+//    private fun getLastLocation() {
+//        if (checkPermissions()) {
+//            if (isLocationEnabled()) {
+//
+//                mFusedLocationClient.lastLocation.addOnCompleteListener(this) { task ->
+//                    var location: Location? = task.result
+//                    if (location == null) {
+//                    } else {
+//                        Toast.makeText(this, " lat ${location.latitude} and lon ${location.longitude}", Toast.LENGTH_LONG).show()
+//                    }
+//                }
+//            } else {
+//                Toast.makeText(this, "Turn on location", Toast.LENGTH_LONG).show()
+//                val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
+//                startActivity(intent)
+//            }
+//        } else {
+//            requestPermissions()
+//        }
+//    }
+//
+//    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+//        if (requestCode == permissionId) {
+//            if ((grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+//                getLastLocation()
+//            }
+//        }
+//    }
 }

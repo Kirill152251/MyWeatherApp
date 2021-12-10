@@ -9,9 +9,9 @@ class Repository(private val openWeatherApi: OpenWeatherApi) {
 
     lateinit var weatherNetworkDataSource: WeatherNetworkDataSource
 
-    fun fetchCurrentWeather(location: String, compositeDisposable: CompositeDisposable): LiveData<CurrentWeatherResponse> {
+    fun fetchCurrentWeather(lat:  Double, lon: Double, compositeDisposable: CompositeDisposable): LiveData<CurrentWeatherResponse> {
         weatherNetworkDataSource = WeatherNetworkDataSource(openWeatherApi, compositeDisposable)
-        weatherNetworkDataSource.fetchCurrentWeather(location)
+        weatherNetworkDataSource.fetchCurrentWeather(lat, lon)
         return weatherNetworkDataSource.downloadedCurrentWeatherResponse
     }
 

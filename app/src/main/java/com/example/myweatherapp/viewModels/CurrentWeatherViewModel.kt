@@ -10,11 +10,11 @@ import io.reactivex.disposables.CompositeDisposable
 
 class CurrentWeatherViewModel(
     private val repository: Repository,
-    private val location: String
+    lat: Double, lon: Double
 ) : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     val currentWeather: LiveData<CurrentWeatherResponse> by lazy {
-        repository.fetchCurrentWeather(location, compositeDisposable)
+        repository.fetchCurrentWeather(lat, lon, compositeDisposable)
     }
 
     val networkState: LiveData<NetworkState> by lazy {

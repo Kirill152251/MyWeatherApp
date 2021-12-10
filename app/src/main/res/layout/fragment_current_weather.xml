@@ -61,6 +61,7 @@
         app:constraint_referenced_ids="currentLocation, currentWeatherImage, currentTemp,
 dotted_line1,dotted_line2, humidityImage, humidityValue, rainImage,rainValue,pressureImage,pressureValue,windDirectionImage,
 windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

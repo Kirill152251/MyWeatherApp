@@ -21,12 +21,12 @@ class WeatherNetworkDataSource(
     val networkState: LiveData<NetworkState>
         get() = _networkState
 
-    fun fetchCurrentWeather(location: String) {
+    fun fetchCurrentWeather(lat:  Double, lon: Double) {
         _networkState.postValue(NetworkState.LOADING)
 
         try {
             compositeDisposable.add(
-                openWeatherApi.getCurrentWeather(location)
+                openWeatherApi.getCurrentWeather(lat, lon)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                         {
