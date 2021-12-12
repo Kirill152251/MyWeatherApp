@@ -2,10 +2,31 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/currentWeatherFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/currentWeatherFragment"
     tools:context=".view.fragments.CurrentWeatherFragment">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/cw_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/title_cw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Today"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
 
     <ProgressBar
         android:id="@+id/currentWeatherProgressBar"
@@ -30,38 +51,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/todayTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp"
-        android:text="Today"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:id="@+id/topLine"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/grey"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/todayTitle" />
 
     <androidx.constraintlayout.widget.Group
         android:id="@+id/all_ui"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         app:constraint_referenced_ids="currentLocation, currentWeatherImage, currentTemp,
 dotted_line1,dotted_line2, humidityImage, humidityValue, rainImage,rainValue,pressureImage,pressureValue,windDirectionImage,
 windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -72,10 +70,11 @@ windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
         android:id="@+id/currentWeatherImage"
         android:layout_width="100dp"
         android:layout_height="100dp"
-        android:layout_marginTop="72dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.482"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/topLine" />
+        app:layout_constraintTop_toBottomOf="@+id/cw_toolbar" />
 
     <TextView
         android:id="@+id/currentLocation"
@@ -104,7 +103,7 @@ windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
         android:id="@+id/dotted_line1"
         android:layout_width="160dp"
         android:layout_height="3dp"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="40dp"
         android:src="@drawable/dotted_line"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -229,8 +228,9 @@ windDirectionValue, windSpeedImage, windSpeedValue, btn_share"
         android:textSize="23sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/dotted_line2" />
+        app:layout_constraintTop_toBottomOf="@+id/dotted_line2"
+        app:layout_constraintVertical_bias="0.314" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

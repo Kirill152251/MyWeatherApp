@@ -48,6 +48,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
     private lateinit var viewModelFactory: CurrentWeatherViewModelFactory
     private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var repository: Repository
+    private lateinit var locationRequest: LocationRequest
 
 
     override fun onCreateView(
@@ -73,51 +74,59 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
     }
 
     @SuppressLint("MissingPermission")
-    fun getLocation(): MutableList<Double> {
-        var latlot = mutableListOf<Double>(53.9006, 27.5590)
+    private fun showUI() {
+
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
             if (it == null) {
-                Toast.makeText(requireContext(), "some text", Toast.LENGTH_SHORT).show()
+                getNewLocation()
+                showUI()
+
             } else {
-                latlot.add(it.latitude)
-                latlot.add(it.longitude)
-                Toast.makeText(
-                    requireContext(),
-                    "${it.latitude} ${it.longitude}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                viewModelFactory =
+                    CurrentWeatherViewModelFactory(repository, it.latitude, it.longitude)
+                viewModel =
+                    ViewModelProvider(
+                        this,
+                        viewModelFactory
+                    ).get(CurrentWeatherViewModel::class.java)
+
+                viewModel.currentWeather.observe(viewLifecycleOwner, Observer { weather ->
+                    bindUI(weather)
+                })
+                viewModel.networkState.observe(viewLifecycleOwner, Observer { currentNetworkState ->
+                    if (currentNetworkState == NetworkState.LOADING) {
+                        binding.currentWeatherProgressBar.visibility = View.VISIBLE
+                        binding.allUi.visibility = View.GONE
+                    } else {
+                        binding.currentWeatherProgressBar.visibility = View.GONE
+                        binding.allUi.visibility = View.VISIBLE
+                    }
+                    if (currentNetworkState == NetworkState.ERROR) {
+                        binding.cwErrorMsg.visibility = View.VISIBLE
+                        binding.allUi.visibility = View.GONE
+                    }
+
+                })
             }
         }
-        return latlot
     }
 
     @SuppressLint("MissingPermission")
-    private fun showUI() {
-
-        val latlot = getLocation()
-        //Toast.makeText(requireContext(),"${coord[0]} ${coord[1]}", Toast.LENGTH_SHORT).show()
-        //viewModelFactory = CurrentWeatherViewModelFactory(repository, 55.7558, 37.6173)
-        viewModelFactory = CurrentWeatherViewModelFactory(repository, latlot.first(), latlot.last())
-        viewModel =
-            ViewModelProvider(this, viewModelFactory).get(CurrentWeatherViewModel::class.java)
-
-        viewModel.currentWeather.observe(viewLifecycleOwner, Observer {
-            bindUI(it)
-        })
-        viewModel.networkState.observe(viewLifecycleOwner, Observer {
-            if (it == NetworkState.LOADING) {
-                binding.currentWeatherProgressBar.visibility = View.VISIBLE
-                binding.allUi.visibility = View.GONE
-            } else {
-                binding.currentWeatherProgressBar.visibility = View.GONE
-                binding.allUi.visibility = View.VISIBLE
-            }
-            if (it == NetworkState.ERROR) {
-                binding.cwErrorMsg.visibility = View.VISIBLE
-                binding.allUi.visibility = View.GONE
-            }
-
-        })
+    private fun getNewLocation(){
+        locationRequest = LocationRequest().apply {
+            interval = TimeUnit.SECONDS.toMillis(0)
+            fastestInterval = TimeUnit.SECONDS.toMillis(0)
+            maxWaitTime = TimeUnit.SECONDS.toMillis(5)
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest, callback, Looper.myLooper()
+        )
+    }
+    private val callback = object : LocationCallback(){
+        override fun onLocationResult(p0: LocationResult) {
+            super.onLocationResult(p0)
+        }
     }
 
     private fun requestPermission() {

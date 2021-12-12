@@ -9,7 +9,11 @@
         android:id="@+id/item_current_weather"
         android:name="com.example.myweatherapp.view.fragments.CurrentWeatherFragment"
         android:label="fragment_current_weather"
-        tools:layout="@layout/fragment_current_weather" />
+        tools:layout="@layout/fragment_current_weather" >
+        <action
+            android:id="@+id/action_item_current_weather_to_item_forecast"
+            app:destination="@id/item_forecast" />
+    </fragment>
     <fragment
         android:id="@+id/item_forecast"
         android:name="com.example.myweatherapp.view.fragments.ForecastFragment"

@@ -1,10 +1,13 @@
 package com.example.myweatherapp.repository
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
@@ -21,11 +24,12 @@ class WeatherNetworkDataSource(
     val networkState: LiveData<NetworkState>
         get() = _networkState
 
+
     fun fetchCurrentWeather(lat:  Double, lon: Double) {
         _networkState.postValue(NetworkState.LOADING)
-
         try {
             compositeDisposable.add(
+
                 openWeatherApi.getCurrentWeather(lat, lon)
                     .subscribeOn(Schedulers.io())
                     .subscribe(
