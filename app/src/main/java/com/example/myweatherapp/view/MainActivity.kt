@@ -15,7 +15,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setBottomMenu()
     }
-
     private fun setBottomMenu() {
         val navController = findNavController(R.id.myNavHostFragment)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_menu)

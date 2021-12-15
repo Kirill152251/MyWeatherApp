@@ -4,18 +4,29 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <TextView
+        android:id="@+id/day_of_the_week"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Friday"
+        android:textSize="25sp"
+        android:layout_marginStart="10dp"
+        android:paddingBottom="10dp"
+        android:paddingTop="7dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
     <View
         style="@style/ListDivider"
+        android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toTopOf="@id/weather_image"/>
     <View
         style="@style/ListDivider"
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -28,7 +39,7 @@
         android:layout_height="100dp"
         android:src="@drawable/weather_rainy"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/day_of_the_week" />
 
     <TextView
         android:id="@+id/time"
@@ -40,7 +51,7 @@
         android:textSize="17sp"
         app:layout_constraintBottom_toTopOf="@+id/weather_description"
         app:layout_constraintStart_toEndOf="@+id/weather_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/day_of_the_week" />
 
     <TextView
         android:id="@+id/weather_description"
@@ -60,9 +71,9 @@
         android:text="22°C"
         android:textColor="@color/blue"
         android:textSize="50sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/weather_image"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/divider" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,7 +1,6 @@
 package com.example.myweatherapp.permissions
 
 import android.content.Context
-import android.os.Build
 import pub.devrel.easypermissions.EasyPermissions
 
 object TrackingUtility {

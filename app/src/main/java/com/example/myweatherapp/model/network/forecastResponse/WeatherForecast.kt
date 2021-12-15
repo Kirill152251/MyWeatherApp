@@ -6,5 +6,6 @@ import com.google.gson.annotations.SerializedName
 data class WeatherForecast(
     val icon: String,
     val id: Int,
-    val main: String
+    @SerializedName("main")
+    val desc: String
 )

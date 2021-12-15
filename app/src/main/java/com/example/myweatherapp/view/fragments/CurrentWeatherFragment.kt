@@ -169,7 +169,6 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
         Glide.with(this)
             .load(iconUrl)
             .into(binding.currentWeatherImage)
-        Log.i("IconInfo", iconUrl)
     }
 
     private fun getWindDirection(degrees: Int): String {
