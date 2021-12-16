@@ -2,21 +2,13 @@ package com.example.myweatherapp.view.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationManager
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -75,12 +67,10 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     @SuppressLint("MissingPermission")
     private fun showUI() {
-
         fusedLocationProviderClient.lastLocation.addOnSuccessListener {
             if (it == null) {
                 getNewLocation()
                 showUI()
-
             } else {
                 viewModelFactory =
                     CurrentWeatherViewModelFactory(repository, it.latitude, it.longitude)
@@ -105,14 +95,13 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
                         binding.cwErrorMsg.visibility = View.VISIBLE
                         binding.allUi.visibility = View.GONE
                     }
-
                 })
             }
         }
     }
 
     @SuppressLint("MissingPermission")
-    private fun getNewLocation(){
+    private fun getNewLocation() {
         locationRequest = LocationRequest().apply {
             interval = TimeUnit.SECONDS.toMillis(0)
             fastestInterval = TimeUnit.SECONDS.toMillis(0)
@@ -123,7 +112,8 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
             locationRequest, callback, Looper.myLooper()
         )
     }
-    private val callback = object : LocationCallback(){
+
+    private val callback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {
             super.onLocationResult(p0)
         }
@@ -143,32 +133,42 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
     }
 
     @SuppressLint("SetTextI18n", "CheckResult")
-    private fun bindUI(it: CurrentWeatherResponse) {
-        binding.windSpeedValue.text = it.wind.speed.toString() + " km/h"
-        val weather = it.weather.first()
-        binding.currentTemp.text = it.main.temp.toInt().toString() + "°C" + " | " + weather.main
-        binding.currentLocation.text = it.name + ", " + it.sys.country
-        binding.humidityValue.text = it.main.humidity.toString() + "%"
-        binding.pressureValue.text = it.main.pressure.toString() + " hPa"
-        binding.windDirectionValue.text = getWindDirection(it.wind.deg)
+    private fun bindUI(currentWeatherResponse: CurrentWeatherResponse) {
+        binding.windSpeedValue.text = currentWeatherResponse.wind.speed.toString() + " km/h"
+        val weather = currentWeatherResponse.weather.first()
+        binding.currentTemp.text =
+            currentWeatherResponse.main.temp.toInt().toString() + "°C" + " | " + weather.main
+        binding.currentLocation.text =
+            currentWeatherResponse.name + ", " + currentWeatherResponse.sys.country
+        binding.humidityValue.text = currentWeatherResponse.main.humidity.toString() + "%"
+        binding.pressureValue.text = currentWeatherResponse.main.pressure.toString() + " hPa"
+        binding.windDirectionValue.text = getWindDirection(currentWeatherResponse.wind.deg)
 
-        if (it.rain?.h1 == null) {
-            if (it.snow?.h1 == null) {
+        if (currentWeatherResponse.rain?.h1 == null) {
+            if (currentWeatherResponse.snow?.h1 == null) {
                 binding.rainImage.setImageResource(R.drawable.weather_rainy)
                 binding.rainValue.text = "0.0 mm"
             } else {
                 binding.rainImage.setImageResource(R.drawable.weather_snowy)
-                binding.rainValue.text = it.snow.h1.toString() + " mm"
+                binding.rainValue.text = currentWeatherResponse.snow.h1.toString() + " mm"
             }
         } else {
             binding.rainImage.setImageResource(R.drawable.weather_rainy)
-            binding.rainValue.text = it.rain.h1.toString() + " mm"
+            binding.rainValue.text = currentWeatherResponse.rain.h1.toString() + " mm"
         }
 
         val iconUrl = ICON_URL + weather.icon + "@2x.png"
         Glide.with(this)
             .load(iconUrl)
             .into(binding.currentWeatherImage)
+
+        binding.btnShare.setOnClickListener {
+            share(
+                "Weather type: ${weather.main}. Temperature: ${
+                    currentWeatherResponse.main.temp.toInt().toString() + "°C."
+                }"
+            )
+        }
     }
 
     private fun getWindDirection(degrees: Int): String {
@@ -192,6 +192,13 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
         )
         val value = floor((degrees / 22.5) + 0.5)
         return array[(value % 16).toInt()]
+    }
+
+    private fun share(data: String) {
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_TEXT, data)
+        startActivity(Intent.createChooser(intent, "Share"))
     }
 
     override fun onDestroy() {

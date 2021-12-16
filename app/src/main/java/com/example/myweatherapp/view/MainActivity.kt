@@ -7,8 +7,6 @@ import androidx.navigation.ui.setupWithNavController
 import com.example.myweatherapp.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
-
-
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,5 +18,4 @@ class MainActivity : AppCompatActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav_menu)
         bottomNavigationView.setupWithNavController(navController)
     }
-
 }
