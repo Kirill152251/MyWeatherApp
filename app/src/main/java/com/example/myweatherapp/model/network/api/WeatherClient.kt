@@ -11,7 +11,6 @@ const val UNITS = "metric"
 const val BASE_URL = "https://api.openweathermap.org/data/2.5/"
 //For icons
 //https://openweathermap.org/img/wn/1d@2x.png
-const val ICON_URL = "https://openweathermap.org/img/wn/"
 object WeatherClient {
 
     fun getClient(): OpenWeatherApi{

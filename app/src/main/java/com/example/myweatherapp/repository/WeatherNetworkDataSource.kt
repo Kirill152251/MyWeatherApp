@@ -1,17 +1,22 @@
 package com.example.myweatherapp.repository
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
+import com.google.android.gms.location.FusedLocationProviderClient
 
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class WeatherNetworkDataSource(
+@Singleton
+class WeatherNetworkDataSource @Inject constructor(
     private val openWeatherApi: OpenWeatherApi,
     private val compositeDisposable: CompositeDisposable
 ) {
@@ -28,29 +33,31 @@ class WeatherNetworkDataSource(
         get() = _networkState
 
 
-    fun fetchCurrentWeather(lat:  Double, lon: Double) {
+    @SuppressLint("MissingPermission")
+    fun fetchCurrentWeather(fusedLocationProviderClient: FusedLocationProviderClient) {
         _networkState.postValue(NetworkState.LOADING)
-        try {
-            compositeDisposable.add(
-                openWeatherApi.getCurrentWeather(lat, lon)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        {
-                            _downloadedCurrentWeatherResponse.postValue(it)
-                            _networkState.postValue(NetworkState.LOADED)
-
-                        },
-                        {
-                            _networkState.postValue(NetworkState.ERROR)
-                            Log.e("NetworkDataSource", it.message!!)
-
-                        })
-            )
-        } catch (e: Exception) {
-            Log.e("NetworkDataSource", e.message!!)
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { latLon ->
+            try {
+                compositeDisposable.add(
+                    openWeatherApi.getCurrentWeather(latLon.latitude, latLon.longitude)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            {
+                                _downloadedCurrentWeatherResponse.postValue(it)
+                                _networkState.postValue(NetworkState.LOADED)
+                            },
+                            {
+                                _networkState.postValue(NetworkState.ERROR)
+                                Log.e("NetworkDataSource", it.message!!)
+                            })
+                )
+            } catch (e: Exception) {
+                Log.e("NetworkDataSource", e.message!!)
+            }
         }
     }
-    fun fetchForecast(lat:  Double, lon: Double) {
+
+    fun fetchForecast(lat: Double, lon: Double) {
         _networkState.postValue(NetworkState.LOADING)
         try {
             compositeDisposable.add(

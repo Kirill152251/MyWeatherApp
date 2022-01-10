@@ -5,41 +5,48 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.SavedStateHandle
 import com.bumptech.glide.Glide
 import com.example.myweatherapp.R
 import com.example.myweatherapp.databinding.FragmentCurrentWeatherBinding
+import com.example.myweatherapp.model.constants.Constants.ICON_URL
+import com.example.myweatherapp.model.constants.Constants.LAT_KEY
+import com.example.myweatherapp.model.constants.Constants.LON_KEY
 import com.example.myweatherapp.model.constants.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
-import com.example.myweatherapp.model.network.api.ICON_URL
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.model.network.api.WeatherClient
 import com.example.myweatherapp.permissions.TrackingUtility
 import com.example.myweatherapp.repository.NetworkState
 import com.example.myweatherapp.repository.Repository
+import com.example.myweatherapp.view.MainActivity
 import com.example.myweatherapp.viewModels.CurrentWeatherViewModel
-import com.example.myweatherapp.viewModels.CurrentWeatherViewModelFactory
 import com.google.android.gms.location.*
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 import kotlin.math.floor
 
-
+@AndroidEntryPoint
 class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
     EasyPermissions.PermissionCallbacks {
 
     private var _binding: FragmentCurrentWeatherBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: CurrentWeatherViewModel
-    private lateinit var viewModelFactory: CurrentWeatherViewModelFactory
-    private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var repository: Repository
+    @Inject
+    lateinit var repository: Repository
+    private val viewModel by viewModels<CurrentWeatherViewModel>()
+
+    //private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
 
 
@@ -53,10 +60,8 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val weatherApi: OpenWeatherApi = WeatherClient.getClient()
-        repository = Repository(weatherApi)
-        fusedLocationProviderClient =
-            LocationServices.getFusedLocationProviderClient(requireActivity())
+//        fusedLocationProviderClient =
+//            LocationServices.getFusedLocationProviderClient(requireActivity())
         if (TrackingUtility.hasLocationPermissions(requireContext())) {
             showUI()
         } else {
@@ -67,51 +72,43 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     @SuppressLint("MissingPermission")
     private fun showUI() {
-        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-            if (it == null) {
-                getNewLocation()
-                showUI()
+//        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+//            if (it == null) {
+//                getNewLocation()
+//                showUI()
+//            } else {
+        viewModel.currentWeather.observe(viewLifecycleOwner, Observer { weather ->
+            bindUI(weather)
+        })
+        viewModel.networkState.observe(viewLifecycleOwner, Observer { currentNetworkState ->
+            if (currentNetworkState == NetworkState.LOADING) {
+                binding.currentWeatherProgressBar.visibility = View.VISIBLE
+                binding.allUi.visibility = View.GONE
             } else {
-                viewModelFactory =
-                    CurrentWeatherViewModelFactory(repository, it.latitude, it.longitude)
-                viewModel =
-                    ViewModelProvider(
-                        this,
-                        viewModelFactory
-                    ).get(CurrentWeatherViewModel::class.java)
-
-                viewModel.currentWeather.observe(viewLifecycleOwner, Observer { weather ->
-                    bindUI(weather)
-                })
-                viewModel.networkState.observe(viewLifecycleOwner, Observer { currentNetworkState ->
-                    if (currentNetworkState == NetworkState.LOADING) {
-                        binding.currentWeatherProgressBar.visibility = View.VISIBLE
-                        binding.allUi.visibility = View.GONE
-                    } else {
-                        binding.currentWeatherProgressBar.visibility = View.GONE
-                        binding.allUi.visibility = View.VISIBLE
-                    }
-                    if (currentNetworkState == NetworkState.ERROR) {
-                        binding.cwErrorMsg.visibility = View.VISIBLE
-                        binding.allUi.visibility = View.GONE
-                    }
-                })
+                binding.currentWeatherProgressBar.visibility = View.GONE
+                binding.allUi.visibility = View.VISIBLE
             }
-        }
+            if (currentNetworkState == NetworkState.ERROR) {
+                binding.cwErrorMsg.visibility = View.VISIBLE
+                binding.allUi.visibility = View.GONE
+            }
+        })
+
+//        }
     }
 
-    @SuppressLint("MissingPermission")
-    private fun getNewLocation() {
-        locationRequest = LocationRequest().apply {
-            interval = TimeUnit.SECONDS.toMillis(0)
-            fastestInterval = TimeUnit.SECONDS.toMillis(0)
-            maxWaitTime = TimeUnit.SECONDS.toMillis(5)
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-        fusedLocationProviderClient.requestLocationUpdates(
-            locationRequest, callback, Looper.myLooper()
-        )
-    }
+//    @SuppressLint("MissingPermission")
+//    private fun getNewLocation() {
+//        locationRequest = LocationRequest().apply {
+//            interval = TimeUnit.SECONDS.toMillis(0)
+//            fastestInterval = TimeUnit.SECONDS.toMillis(0)
+//            maxWaitTime = TimeUnit.SECONDS.toMillis(5)
+//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+//        }
+//        fusedLocationProviderClient.requestLocationUpdates(
+//            locationRequest, callback, Looper.myLooper()!!
+//        )
+//    }
 
     private val callback = object : LocationCallback() {
         override fun onLocationResult(p0: LocationResult) {

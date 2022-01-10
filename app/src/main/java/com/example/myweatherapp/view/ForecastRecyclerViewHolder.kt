@@ -7,7 +7,7 @@ import androidx.viewbinding.ViewBinding
 import com.bumptech.glide.Glide
 import com.example.myweatherapp.databinding.ForecastItemBinding
 import com.example.myweatherapp.databinding.ForecastItemFirstOfAdayBinding
-import com.example.myweatherapp.model.network.api.ICON_URL
+import com.example.myweatherapp.model.constants.Constants.ICON_URL
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
 import java.util.*
 

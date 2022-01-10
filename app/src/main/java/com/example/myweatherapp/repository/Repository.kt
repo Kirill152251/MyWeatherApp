@@ -4,19 +4,30 @@ import androidx.lifecycle.LiveData
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
+import com.google.android.gms.location.FusedLocationProviderClient
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class Repository(private val openWeatherApi: OpenWeatherApi) {
+@Singleton
+class Repository @Inject constructor(private val openWeatherApi: OpenWeatherApi) {
 
     lateinit var weatherNetworkDataSource: WeatherNetworkDataSource
 
-    fun fetchCurrentWeather(lat:  Double, lon: Double, compositeDisposable: CompositeDisposable): LiveData<CurrentWeatherResponse> {
+    fun fetchCurrentWeather(
+        fusedLocationProviderClient: FusedLocationProviderClient,
+        compositeDisposable: CompositeDisposable
+    ): LiveData<CurrentWeatherResponse> {
         weatherNetworkDataSource = WeatherNetworkDataSource(openWeatherApi, compositeDisposable)
-        weatherNetworkDataSource.fetchCurrentWeather(lat, lon)
+        weatherNetworkDataSource.fetchCurrentWeather(fusedLocationProviderClient)
         return weatherNetworkDataSource.downloadedCurrentWeatherResponse
     }
 
-    fun fetchForecast(lat: Double, lon: Double, compositeDisposable: CompositeDisposable): LiveData<ForecastResponse> {
+    fun fetchForecast(
+        lat: Double,
+        lon: Double,
+        compositeDisposable: CompositeDisposable
+    ): LiveData<ForecastResponse> {
         weatherNetworkDataSource = WeatherNetworkDataSource(openWeatherApi, compositeDisposable)
         weatherNetworkDataSource.fetchForecast(lat, lon)
         return weatherNetworkDataSource.downloadedForecastResponse

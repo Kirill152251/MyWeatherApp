@@ -14,8 +14,8 @@ import retrofit2.http.Query
 interface OpenWeatherApi {
     @GET("weather")
     fun getCurrentWeather(
-        @Query("lat") lat: Double,
-        @Query("lon") lon: Double,
+        @Query("lat") lat: Double?,
+        @Query("lon") lon: Double?,
     ): Single<CurrentWeatherResponse>
 
     @GET("forecast")
