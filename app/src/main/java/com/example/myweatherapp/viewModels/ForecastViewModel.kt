@@ -5,14 +5,24 @@ import androidx.lifecycle.ViewModel
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
 import com.example.myweatherapp.repository.NetworkState
 import com.example.myweatherapp.repository.Repository
+import com.google.android.gms.location.FusedLocationProviderClient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
+import javax.inject.Inject
 
-class ForecastViewModel(private val repository: Repository, lat: Double, lon: Double) :
+@HiltViewModel
+class ForecastViewModel @Inject constructor(
+    private val repository: Repository,
+    /*Via fusedLocationProviderClient i will get
+    latitude and longitude in WeatherNetworkDatasource.
+    After that lat and lon will be used in api response.*/
+    private val fusedLocationProviderClient: FusedLocationProviderClient
+) :
     ViewModel() {
-    private val compositeDisposable = CompositeDisposable()
+    @Inject lateinit var compositeDisposable: CompositeDisposable
 
     val forecast: LiveData<ForecastResponse> by lazy {
-        repository.fetchForecast(lat, lon, compositeDisposable)
+        repository.fetchForecast(fusedLocationProviderClient, compositeDisposable)
     }
 
     val networkState: LiveData<NetworkState> by lazy {

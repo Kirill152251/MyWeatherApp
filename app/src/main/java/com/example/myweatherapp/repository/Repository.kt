@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(private val openWeatherApi: OpenWeatherApi) {
 
-    lateinit var weatherNetworkDataSource: WeatherNetworkDataSource
+     lateinit var weatherNetworkDataSource: WeatherNetworkDataSource
 
     fun fetchCurrentWeather(
         fusedLocationProviderClient: FusedLocationProviderClient,
@@ -24,12 +24,11 @@ class Repository @Inject constructor(private val openWeatherApi: OpenWeatherApi)
     }
 
     fun fetchForecast(
-        lat: Double,
-        lon: Double,
+        fusedLocationProviderClient: FusedLocationProviderClient,
         compositeDisposable: CompositeDisposable
     ): LiveData<ForecastResponse> {
         weatherNetworkDataSource = WeatherNetworkDataSource(openWeatherApi, compositeDisposable)
-        weatherNetworkDataSource.fetchForecast(lat, lon)
+        weatherNetworkDataSource.fetchForecast(fusedLocationProviderClient)
         return weatherNetworkDataSource.downloadedForecastResponse
     }
 

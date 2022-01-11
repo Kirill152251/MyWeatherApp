@@ -76,14 +76,4 @@ object RetrofitModule {
     @Singleton
     @Provides
     fun provideRepository(api: OpenWeatherApi) = Repository(api)
-
-    @Singleton
-    @Provides
-    fun provideCompositeDisposable() = CompositeDisposable()
-
-    @Singleton
-    @Provides
-    fun provideFusedLocationProviderClient(@ApplicationContext context: Context): FusedLocationProviderClient {
-        return LocationServices.getFusedLocationProviderClient(context)
-    }
 }

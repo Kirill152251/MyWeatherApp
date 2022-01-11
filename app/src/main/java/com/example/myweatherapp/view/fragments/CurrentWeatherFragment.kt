@@ -4,35 +4,25 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
-import android.os.Looper
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.SavedStateHandle
 import com.bumptech.glide.Glide
 import com.example.myweatherapp.R
 import com.example.myweatherapp.databinding.FragmentCurrentWeatherBinding
 import com.example.myweatherapp.model.constants.Constants.ICON_URL
-import com.example.myweatherapp.model.constants.Constants.LAT_KEY
-import com.example.myweatherapp.model.constants.Constants.LON_KEY
 import com.example.myweatherapp.model.constants.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
-import com.example.myweatherapp.model.network.api.OpenWeatherApi
-import com.example.myweatherapp.model.network.api.WeatherClient
 import com.example.myweatherapp.permissions.TrackingUtility
 import com.example.myweatherapp.repository.NetworkState
 import com.example.myweatherapp.repository.Repository
-import com.example.myweatherapp.view.MainActivity
 import com.example.myweatherapp.viewModels.CurrentWeatherViewModel
-import com.google.android.gms.location.*
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.math.floor
 
@@ -42,13 +32,8 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     private var _binding: FragmentCurrentWeatherBinding? = null
     private val binding get() = _binding!!
-    @Inject
-    lateinit var repository: Repository
+    @Inject lateinit var repository: Repository
     private val viewModel by viewModels<CurrentWeatherViewModel>()
-
-    //private lateinit var fusedLocationProviderClient: FusedLocationProviderClient
-    private lateinit var locationRequest: LocationRequest
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -60,23 +45,15 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-//        fusedLocationProviderClient =
-//            LocationServices.getFusedLocationProviderClient(requireActivity())
         if (TrackingUtility.hasLocationPermissions(requireContext())) {
             showUI()
         } else {
             requestPermission()
         }
-
     }
 
     @SuppressLint("MissingPermission")
     private fun showUI() {
-//        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-//            if (it == null) {
-//                getNewLocation()
-//                showUI()
-//            } else {
         viewModel.currentWeather.observe(viewLifecycleOwner, Observer { weather ->
             bindUI(weather)
         })
@@ -93,29 +70,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
                 binding.allUi.visibility = View.GONE
             }
         })
-
-//        }
     }
-
-//    @SuppressLint("MissingPermission")
-//    private fun getNewLocation() {
-//        locationRequest = LocationRequest().apply {
-//            interval = TimeUnit.SECONDS.toMillis(0)
-//            fastestInterval = TimeUnit.SECONDS.toMillis(0)
-//            maxWaitTime = TimeUnit.SECONDS.toMillis(5)
-//            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-//        }
-//        fusedLocationProviderClient.requestLocationUpdates(
-//            locationRequest, callback, Looper.myLooper()!!
-//        )
-//    }
-
-    private val callback = object : LocationCallback() {
-        override fun onLocationResult(p0: LocationResult) {
-            super.onLocationResult(p0)
-        }
-    }
-
     private fun requestPermission() {
         if (TrackingUtility.hasLocationPermissions(requireContext())) {
             return
@@ -214,7 +169,6 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
             requestPermission()
         }
     }
-
 
     override fun onRequestPermissionsResult(
         requestCode: Int,

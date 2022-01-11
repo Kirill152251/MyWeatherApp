@@ -6,15 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myweatherapp.databinding.ForecastItemBinding
 import com.example.myweatherapp.databinding.ForecastItemFirstOfAdayBinding
+import com.example.myweatherapp.model.constants.Constants.ANOTHER_ITEM
+import com.example.myweatherapp.model.constants.Constants.FIRST_ITEM
 
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
 
 
 class ForecastAdapter(private val forecastResponse: ForecastResponse, private val context: Context) :
     RecyclerView.Adapter<ForecastRecyclerViewHolder>() {
-    private val FIRST_ITEM = 1
-    private val ANOTHER_ITEM = 0
 
+    /*First  item of each day must contain day of the week on top of it.
+    That's why i create RV with two items. One item contain day of the week and this item always the first of each day.
+    Second item don't contain day of the week and used to show all other time with weather except first of a day.*/
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastRecyclerViewHolder {
         return when (viewType) {
@@ -48,7 +51,6 @@ class ForecastAdapter(private val forecastResponse: ForecastResponse, private va
                 holder.bind(forecastResponse,position,context)
             }
         }
-
     }
 
     override fun getItemCount() = forecastResponse.list.size

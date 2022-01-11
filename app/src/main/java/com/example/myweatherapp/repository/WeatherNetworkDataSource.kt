@@ -8,7 +8,6 @@ import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeat
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
 import com.google.android.gms.location.FusedLocationProviderClient
-
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import java.lang.Exception
@@ -20,6 +19,7 @@ class WeatherNetworkDataSource @Inject constructor(
     private val openWeatherApi: OpenWeatherApi,
     private val compositeDisposable: CompositeDisposable
 ) {
+
     private val _downloadedCurrentWeatherResponse = MutableLiveData<CurrentWeatherResponse>()
     val downloadedCurrentWeatherResponse: LiveData<CurrentWeatherResponse>
         get() = _downloadedCurrentWeatherResponse
@@ -57,26 +57,27 @@ class WeatherNetworkDataSource @Inject constructor(
         }
     }
 
-    fun fetchForecast(lat: Double, lon: Double) {
+    @SuppressLint("MissingPermission")
+    fun fetchForecast(fusedLocationProviderClient: FusedLocationProviderClient) {
         _networkState.postValue(NetworkState.LOADING)
-        try {
-            compositeDisposable.add(
-                openWeatherApi.getForecast(lat, lon)
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                        {
-                            _downloadedForecastResponse.postValue(it)
-                            _networkState.postValue(NetworkState.LOADED)
-
-                        },
-                        {
-                            _networkState.postValue(NetworkState.ERROR)
-                            Log.e("NetworkDataSource", it.message!!)
-
-                        })
-            )
-        } catch (e: Exception) {
-            Log.e("NetworkDataSource", e.message!!)
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener { latLon ->
+            try {
+                compositeDisposable.add(
+                    openWeatherApi.getForecast(latLon.latitude, latLon.longitude)
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
+                            {
+                                _downloadedForecastResponse.postValue(it)
+                                _networkState.postValue(NetworkState.LOADED)
+                            },
+                            {
+                                _networkState.postValue(NetworkState.ERROR)
+                                Log.e("NetworkDataSource", it.message!!)
+                            })
+                )
+            } catch (e: Exception) {
+                Log.e("NetworkDataSource", e.message!!)
+            }
         }
     }
 }
