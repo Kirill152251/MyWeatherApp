@@ -15,9 +15,13 @@ import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
 class ForecastAdapter(private val forecastResponse: ForecastResponse, private val context: Context) :
     RecyclerView.Adapter<ForecastRecyclerViewHolder>() {
 
-    /*First  item of each day must contain day of the week on top of it.
-    That's why i create RV with two items. One item contain day of the week and this item always the first of each day.
-    Second item don't contain day of the week and used to show all other time with weather except first of a day.*/
+    /**
+     * I created RV with two items.
+     * First type of item contain day of the week on top of it.
+     * This type always the first for each day.
+     * Second type of item almost the same as first, but without day of the week.
+     * It's used to show all other items except the first of a day.
+     */
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastRecyclerViewHolder {
         return when (viewType) {

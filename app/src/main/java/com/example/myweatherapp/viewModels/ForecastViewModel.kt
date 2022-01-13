@@ -13,9 +13,10 @@ import javax.inject.Inject
 @HiltViewModel
 class ForecastViewModel @Inject constructor(
     private val repository: Repository,
-    /*Via fusedLocationProviderClient i will get
-    latitude and longitude in WeatherNetworkDatasource.
-    After that lat and lon will be used in api response.*/
+    /**
+     * Via fusedLocationProviderClient i get latitude and longitude for the WeatherNetworkDatasource in repository.
+     * After that lat and lon are used in api response.
+     */
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) :
     ViewModel() {

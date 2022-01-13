@@ -13,13 +13,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CurrentWeatherViewModel @Inject constructor(
     private val repository: Repository,
-    /*Via fusedLocationProviderClient i will get
-    latitude and longitude in WeatherNetworkDatasource.
-    After that lat and lon will be used in api response.*/
+    /**
+     * Via fusedLocationProviderClient i will get latitude and longitude in WeatherNetworkDatasource.
+     * After that lat and lon will be used in api response.
+     */
     private val fusedLocationProviderClient: FusedLocationProviderClient
 ) : ViewModel() {
 
-    @Inject lateinit var compositeDisposable: CompositeDisposable
+    @Inject
+    lateinit var compositeDisposable: CompositeDisposable
 
     val currentWeather: LiveData<CurrentWeatherResponse> by lazy {
         repository.fetchCurrentWeather(
@@ -30,6 +32,7 @@ class CurrentWeatherViewModel @Inject constructor(
     val networkState: LiveData<NetworkState> by lazy {
         repository.fetchNetworkState()
     }
+
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.clear()
