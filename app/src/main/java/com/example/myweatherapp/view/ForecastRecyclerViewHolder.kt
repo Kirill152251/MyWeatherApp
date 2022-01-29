@@ -55,7 +55,7 @@ sealed class ForecastRecyclerViewHolder(binding: ViewBinding) :
             val day = date.substringAfterLast("-").toInt()
             val month = date.substringBeforeLast("-").substringAfterLast("-").toInt()
             val year = date.substringBefore("-").toInt()
-            var c: Calendar = Calendar.getInstance()
+            val c: Calendar = Calendar.getInstance()
             c.set(year,month,day)
             when(c.get(Calendar.DAY_OF_WEEK)) {
                 1 -> binding.dayOfTheWeek.text = "THURSDAY"

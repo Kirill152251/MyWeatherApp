@@ -5,4 +5,5 @@ object Constants {
     const val ICON_URL = "https://openweathermap.org/img/wn/"
     const val FIRST_ITEM = 1
     const val ANOTHER_ITEM = 0
+    const val CURRENT_WEATHER_ID = 0
 }
