@@ -11,10 +11,11 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.myweatherapp.R
 import com.example.myweatherapp.databinding.FragmentForecastBinding
-import com.example.myweatherapp.repository.NetworkState
 import com.example.myweatherapp.repository.Repository
+import com.example.myweatherapp.utils.Resource
 import com.example.myweatherapp.view.ForecastAdapter
 import com.example.myweatherapp.viewModels.ForecastViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -25,6 +26,7 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     private var _binding: FragmentForecastBinding? = null
     private val binding get() = _binding!!
     @Inject lateinit var repository: Repository
+    @Inject lateinit var fusedLocationProviderClient: FusedLocationProviderClient
     private val viewModel by viewModels<ForecastViewModel>()
 
 
@@ -39,29 +41,42 @@ class ForecastFragment : Fragment(R.layout.fragment_forecast) {
     @SuppressLint("MissingPermission")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+            viewModel.getForecast(it.latitude, it.longitude).observe(viewLifecycleOwner, Observer { forecast ->
+                when (forecast.status) {
+                    Resource.Status.SUCCESS -> {
+                        val adapter = ForecastAdapter(forecast.data!!, requireContext())
+                        binding.apply {
+                            location.text = forecast.data.city.name
+                            rvForecast.layoutManager = LinearLayoutManager(requireContext())
+                            rvForecast.adapter = adapter
+                            rvForecast.visibility = View.VISIBLE
+                            location.visibility = View.VISIBLE
+                            errorMsg.visibility = View.GONE
+                            progressBar.visibility = View.GONE
+                        }
+                    }
+                    Resource.Status.LOADING -> {
+                        binding.apply {
+                            progressBar.visibility = View.VISIBLE
+                            rvForecast.visibility = View.GONE
+                            location.visibility = View.GONE
+                            errorMsg.visibility = View.GONE
+                        }
+                    }
+                    Resource.Status.ERROR -> {
+                        binding.apply {
+                            progressBar.visibility = View.GONE
+                            rvForecast.visibility = View.GONE
+                            location.visibility = View.GONE
+                            errorMsg.text = forecast.message
+                            errorMsg.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            })
+        }
 
-        viewModel.forecast.observe(viewLifecycleOwner, Observer { forecast ->
-            binding.location.text = forecast.city.name
-            val adapter = ForecastAdapter(forecast, requireContext())
-            binding.rvForecast.layoutManager = LinearLayoutManager(requireContext())
-            binding.rvForecast.adapter = adapter
-        })
-        viewModel.networkState.observe(viewLifecycleOwner, Observer { currentNetworkState ->
-            if (currentNetworkState == NetworkState.LOADING) {
-                binding.progressBar.visibility = View.VISIBLE
-                binding.rvForecast.visibility = View.GONE
-                binding.location.visibility = View.GONE
-            } else {
-                binding.progressBar.visibility = View.GONE
-                binding.rvForecast.visibility = View.VISIBLE
-                binding.location.visibility = View.VISIBLE
-            }
-            if (currentNetworkState == NetworkState.ERROR) {
-                binding.errorMsg.visibility = View.VISIBLE
-                binding.rvForecast.visibility = View.GONE
-                binding.location.visibility = View.GONE
-            }
-        })
     }
 
     override fun onDestroy() {

@@ -16,10 +16,11 @@ import com.example.myweatherapp.databinding.FragmentCurrentWeatherBinding
 import com.example.myweatherapp.model.constants.Constants.ICON_URL
 import com.example.myweatherapp.model.constants.Constants.PERMISSION_LOCATION_REQUEST_CODE
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
-import com.example.myweatherapp.permissions.TrackingUtility
-import com.example.myweatherapp.repository.NetworkState
+import com.example.myweatherapp.utils.TrackingUtility
 import com.example.myweatherapp.repository.Repository
+import com.example.myweatherapp.utils.Resource
 import com.example.myweatherapp.viewModels.CurrentWeatherViewModel
+import com.google.android.gms.location.FusedLocationProviderClient
 import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -34,6 +35,7 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
     private val binding get() = _binding!!
     @Inject lateinit var repository: Repository
     private val viewModel by viewModels<CurrentWeatherViewModel>()
+    @Inject lateinit var fusedLocationProviderClient: FusedLocationProviderClient
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,23 +56,37 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     @SuppressLint("MissingPermission")
     private fun showUI() {
-        viewModel.currentWeather.observe(viewLifecycleOwner, Observer { weather ->
-            bindUI(weather)
-        })
-        viewModel.networkState.observe(viewLifecycleOwner, Observer { currentNetworkState ->
-            if (currentNetworkState == NetworkState.LOADING) {
-                binding.currentWeatherProgressBar.visibility = View.VISIBLE
-                binding.allUi.visibility = View.GONE
-            } else {
-                binding.currentWeatherProgressBar.visibility = View.GONE
-                binding.allUi.visibility = View.VISIBLE
-            }
-            if (currentNetworkState == NetworkState.ERROR) {
-                binding.cwErrorMsg.visibility = View.VISIBLE
-                binding.allUi.visibility = View.GONE
-            }
-        })
+        fusedLocationProviderClient.lastLocation.addOnSuccessListener {
+            viewModel.currentWeather(it.latitude, it.longitude).observe(viewLifecycleOwner, Observer { currentWeather ->
+                when (currentWeather.status) {
+                    Resource.Status.SUCCESS -> {
+                        bindUI(currentWeather.data!!)
+                        binding.apply {
+                            currentWeatherProgressBar.visibility = View.GONE
+                            cwErrorMsg.visibility = View.GONE
+                            allUi.visibility = View.VISIBLE
+                        }
+                    }
+                    Resource.Status.LOADING -> {
+                        binding.apply {
+                            allUi.visibility = View.GONE
+                            cwErrorMsg.visibility = View.GONE
+                            currentWeatherProgressBar.visibility = View.VISIBLE
+                        }
+                    }
+                    Resource.Status.ERROR -> {
+                        binding.apply {
+                            allUi.visibility = View.GONE
+                            currentWeatherProgressBar.visibility = View.GONE
+                            cwErrorMsg.text = currentWeather.message
+                            cwErrorMsg.visibility = View.VISIBLE
+                        }
+                    }
+                }
+            })
+        }
     }
+
     private fun requestPermission() {
         if (TrackingUtility.hasLocationPermissions(requireContext())) {
             return
@@ -86,27 +102,34 @@ class CurrentWeatherFragment : Fragment(R.layout.fragment_current_weather),
 
     @SuppressLint("SetTextI18n", "CheckResult")
     private fun bindUI(currentWeatherResponse: CurrentWeatherResponse) {
-        binding.windSpeedValue.text = currentWeatherResponse.wind.speed.toString() + " km/h"
         val weather = currentWeatherResponse.weather.first()
-        binding.currentTemp.text =
-            currentWeatherResponse.main.temp.toInt().toString() + "°C" + " | " + weather.main
-        binding.currentLocation.text =
-            currentWeatherResponse.name + ", " + currentWeatherResponse.sys.country
-        binding.humidityValue.text = currentWeatherResponse.main.humidity.toString() + "%"
-        binding.pressureValue.text = currentWeatherResponse.main.pressure.toString() + " hPa"
-        binding.windDirectionValue.text = getWindDirection(currentWeatherResponse.wind.deg)
-
+        binding.apply {
+            windSpeedValue.text = currentWeatherResponse.wind.speed.toString() + " km/h"
+            currentTemp.text =
+                currentWeatherResponse.main.temp.toInt().toString() + "°C" + " | " + weather.main
+            currentLocation.text =
+                currentWeatherResponse.name + ", " + currentWeatherResponse.sys.country
+            humidityValue.text = currentWeatherResponse.main.humidity.toString() + "%"
+            pressureValue.text = currentWeatherResponse.main.pressure.toString() + " hPa"
+            windDirectionValue.text = getWindDirection(currentWeatherResponse.wind.deg)
+        }
         if (currentWeatherResponse.rain?.h1 == null) {
             if (currentWeatherResponse.snow?.h1 == null) {
-                binding.rainImage.setImageResource(R.drawable.weather_rainy)
-                binding.rainValue.text = "0.0 mm"
+                binding.apply {
+                    rainImage.setImageResource(R.drawable.weather_rainy)
+                    rainValue.text = "0.0 mm"
+                }
             } else {
-                binding.rainImage.setImageResource(R.drawable.weather_snowy)
-                binding.rainValue.text = currentWeatherResponse.snow.h1.toString() + " mm"
+                binding.apply {
+                    rainImage.setImageResource(R.drawable.weather_snowy)
+                    rainValue.text = currentWeatherResponse.snow.h1.toString() + " mm"
+                }
             }
         } else {
-            binding.rainImage.setImageResource(R.drawable.weather_rainy)
-            binding.rainValue.text = currentWeatherResponse.rain.h1.toString() + " mm"
+            binding.apply {
+                rainImage.setImageResource(R.drawable.weather_rainy)
+                rainValue.text = currentWeatherResponse.rain.h1.toString() + " mm"
+            }
         }
 
         val iconUrl = ICON_URL + weather.icon + "@2x.png"

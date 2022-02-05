@@ -1,20 +1,19 @@
 package com.example.myweatherapp.model.db
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.example.myweatherapp.model.constants.Constants.CURRENT_WEATHER_ID
-import com.example.myweatherapp.model.db.entities.CurrentWeatherEntity
-import io.reactivex.Completable
-import io.reactivex.Single
+import androidx.lifecycle.LiveData
+import androidx.room.*
+import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
+
 
 @Dao
 interface CurrentWeatherDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCurrentWeather(weatherEntity: CurrentWeatherEntity): Completable
+    suspend fun insertCurrentWeather(CurrentWeatherResponse: CurrentWeatherResponse)
 
-    @Query("select * from current_weather where id = $CURRENT_WEATHER_ID")
-    fun getCurrentWeatherFromDB(): Single<CurrentWeatherEntity>
+    @Query("select * from current_weather")
+    fun getCurrentWeatherFromDB(): LiveData<CurrentWeatherResponse>
+
+    @Query("select `updatedTime` from current_weather")
+    fun getLastUpdateTime(): String
 }

@@ -2,7 +2,7 @@ package com.example.myweatherapp.model.network.api
 
 import com.example.myweatherapp.model.network.currentWeatherResponse.CurrentWeatherResponse
 import com.example.myweatherapp.model.network.forecastResponse.ForecastResponse
-import io.reactivex.Single
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -14,14 +14,14 @@ https://api.openweathermap.org/data/2.5/forecast?lat=35&lon=139&appid=98c8b6b22e
 */
 interface OpenWeatherApi {
     @GET("weather")
-    fun getCurrentWeather(
+    suspend fun getCurrentWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-    ): Single<CurrentWeatherResponse>
+    ): Response<CurrentWeatherResponse>
 
     @GET("forecast")
-    fun getForecast(
+    suspend fun getForecast(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-    ): Single<ForecastResponse>
+    ): Response<ForecastResponse>
 }

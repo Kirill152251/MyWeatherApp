@@ -1,20 +1,17 @@
 package com.example.myweatherapp.di
 
-import android.content.Context
+import com.example.myweatherapp.model.db.CurrentWeatherDao
+import com.example.myweatherapp.model.db.ForecastDao
 import com.example.myweatherapp.model.network.api.OpenWeatherApi
 import com.example.myweatherapp.repository.Repository
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.location.LocationServices
+import com.example.myweatherapp.repository.WeatherNetworkDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import io.reactivex.disposables.CompositeDisposable
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -63,7 +60,6 @@ object RetrofitModule {
         return Retrofit.Builder()
             .client(okHttpClient)
             .baseUrl(BASE_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -75,5 +71,9 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideRepository(api: OpenWeatherApi) = Repository(api)
+    fun provideRepository(
+        currentWeatherDAO: CurrentWeatherDao,
+        weatherNetworkDataSource: WeatherNetworkDataSource,
+        forecastDao: ForecastDao,
+    ) = Repository(currentWeatherDAO, weatherNetworkDataSource, forecastDao)
 }

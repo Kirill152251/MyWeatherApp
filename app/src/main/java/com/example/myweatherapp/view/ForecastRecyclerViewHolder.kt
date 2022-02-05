@@ -18,17 +18,17 @@ sealed class ForecastRecyclerViewHolder(binding: ViewBinding) :
         @SuppressLint("SetTextI18n")
         fun bind(forecastResponse: ForecastResponse, position: Int, context: Context) {
             binding.tempValue.text =
-                forecastResponse.list[position].mainForecast.temp.toInt().toString() + "°C"
+                forecastResponse.fiveDays[position].mainForecast.temp.toInt().toString() + "°C"
             binding.weatherDescription.text =
-                forecastResponse.list[position].weatherForecast.first().desc
+                forecastResponse.fiveDays[position].weatherForecast.first().desc
 
-            val time = forecastResponse.list[position].dtTxt.substringAfter(" ")
+            val time = forecastResponse.fiveDays[position].dtTxt.substringAfter(" ")
             val timeWithoutSecond = time.substringBeforeLast(":")
             binding.time.text = timeWithoutSecond
 
 
             val iconUrl =
-                ICON_URL + forecastResponse.list[position].weatherForecast.first().icon + "@2x.png"
+                ICON_URL + forecastResponse.fiveDays[position].weatherForecast.first().icon + "@2x.png"
             Glide.with(context).load(iconUrl).into(binding.weatherImage)
         }
     }
@@ -38,19 +38,19 @@ sealed class ForecastRecyclerViewHolder(binding: ViewBinding) :
         @SuppressLint("SetTextI18n")
         fun bind(forecastResponse: ForecastResponse, position: Int, context: Context) {
             binding.tempValue.text =
-                forecastResponse.list[position].mainForecast.temp.toInt().toString() + "°C"
+                forecastResponse.fiveDays[position].mainForecast.temp.toInt().toString() + "°C"
             binding.weatherDescription.text =
-                forecastResponse.list[position].weatherForecast.first().desc
+                forecastResponse.fiveDays[position].weatherForecast.first().desc
 
-            val time = forecastResponse.list[position].dtTxt.substringAfter(" ")
+            val time = forecastResponse.fiveDays[position].dtTxt.substringAfter(" ")
             val timeWithoutSecond = time.substringBeforeLast(":")
             binding.time.text = timeWithoutSecond
 
             val iconUrl =
-                ICON_URL + forecastResponse.list[position].weatherForecast.first().icon + "@2x.png"
+                ICON_URL + forecastResponse.fiveDays[position].weatherForecast.first().icon + "@2x.png"
             Glide.with(context).load(iconUrl).into(binding.weatherImage)
 
-            val date = forecastResponse.list[position].dtTxt.substringBefore(" ")
+            val date = forecastResponse.fiveDays[position].dtTxt.substringBefore(" ")
             //2021-12-20 12:00:00
             val day = date.substringAfterLast("-").toInt()
             val month = date.substringBeforeLast("-").substringAfterLast("-").toInt()

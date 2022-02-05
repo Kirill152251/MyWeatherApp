@@ -57,7 +57,7 @@ class ForecastAdapter(private val forecastResponse: ForecastResponse, private va
         }
     }
 
-    override fun getItemCount() = forecastResponse.list.size
+    override fun getItemCount() = forecastResponse.fiveDays.size
 
     override fun getItemViewType(position: Int): Int {
         return if (checkIfItemFirstInADay(position))
@@ -66,7 +66,7 @@ class ForecastAdapter(private val forecastResponse: ForecastResponse, private va
     }
 
     private fun checkIfItemFirstInADay(position: Int): Boolean {
-        val time = forecastResponse.list[position].dtTxt.substringAfter(" ")
+        val time = forecastResponse.fiveDays[position].dtTxt.substringAfter(" ")
         return position == 0 || time == "00:00:00"
     }
 }

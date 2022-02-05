@@ -1,28 +1,37 @@
 package com.example.myweatherapp.model.network.currentWeatherResponse
 
-import com.example.myweatherapp.model.db.entities.CurrentWeatherEntity
+import androidx.room.ColumnInfo
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
 
+@Entity(tableName = "current_weather")
 data class CurrentWeatherResponse(
+    @Embedded(prefix = "main_")
     val main: Main,
+
     val name: String,
+
+    @Embedded(prefix = "sys_")
     val sys: Sys,
+
+    @Embedded(prefix = "rain_")
     val rain: Rain? = null,
+
+    @Embedded(prefix = "snow_")
+    val snow: Snow? = null,
+
     val visibility: Int,
+
     val weather: List<Weather>,
+
+    @Embedded(prefix = "wind_")
     val wind: Wind,
-    val snow: Snow? = null
-) {
-    fun toCurrentWeatherEntity(): CurrentWeatherEntity {
-        return CurrentWeatherEntity(
-            main = main,
-            name = name,
-            sys = sys,
-            rain = rain,
-            snow = snow,
-            visibility = visibility,
-            weather = weather,
-            wind = wind
-        )
-    }
-}
+
+    @PrimaryKey
+    val id: Int,
+
+    @ColumnInfo(name = "updatedTime")
+    var updateTime:String? = null
+)

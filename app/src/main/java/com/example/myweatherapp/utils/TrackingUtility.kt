@@ -1,4 +1,4 @@
-package com.example.myweatherapp.permissions
+package com.example.myweatherapp.utils
 
 import android.content.Context
 import pub.devrel.easypermissions.EasyPermissions
